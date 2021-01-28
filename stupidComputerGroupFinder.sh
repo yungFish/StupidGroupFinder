@@ -1,7 +1,8 @@
 #!/bin/bash
+
 ##############################################################################
 #
-# Welcome to Stupid Computer Group Finder!
+# Welcome to Stupid ComputerGroup Finder!
 #
 # This script was designed to work in two parts. First, to check all 6 of the
 # deliverables within Jamf Pro to find which Smart Computer Groups are
