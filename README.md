@@ -1,13 +1,12 @@
 # StupidGroupFinder
 
-Version 0 now complete!
+Version 0.1 now complete! Future updates and improvements still to come.
 
-Work in progress - Mobile Device Group and User Group equivalents ~~soon to come~~ have arrived.
+These scripts were designed to locate any Smart Computer/Device/User Groups in your Jamf Pro server that aren't in the scope of any of your deliverables. Once these groups are found, they can be simply deleted or repurposed as desired using Mike Levenick's 'Stupid Groups' app (found here: https://github.com/mike-levenick/stupid-groups/releases) to eliminate the strain of these unnecessary group membership calculations on your server.
 
-The Ebooks and iOS App sections work in their current states but including them makes the script take considerably longer to run - from ~seconds without either deliverable to ~minutes when included, even in small environments. Anecdotally from my test server: searching thru 19 iOS apps added ~17 minutes and searching thru one lone ebook added about 8 minutes to script run time.
+Any comments, tips, feedback, recommendations, etc are always welcome.
 
-Re-evaluation plans/considerations for future revisions:
-- Returning Smart Group ID number along with Smart Group Name for easier correction via Stupid Groups App.
-- Modifying Ebooks and iOS App sections for improved efficiency.
+To-do list:
+- Return Smart Group ID Number along with Smart Group Name for easier correction via Stupid Groups App.
 
 Stay tuned.
