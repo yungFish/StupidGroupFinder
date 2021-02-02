@@ -165,7 +165,7 @@ echo -e "\nUntargeted Groups:"
 
 i=0
 while [ $i -lt ${#noTargetsArray[@]} ]; do
-#	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/mobiledevicegroups/id/${noTargetsArray[$i]} | xmllint --xpath '//mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})"
+#	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/mobiledevicegroups/id/${noTargetsArray[$i]} | xmllint --xpath '//mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})" >> $logFile
 	echo "GroupID: ${noTargetsArray[$i]}" >> $logFile
 	
 	# Output to terminal for simmplicity
