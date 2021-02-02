@@ -35,14 +35,14 @@ touch $logFile
 
 appendTargets () {
 	
-	[[ -n "$TARGETSLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${TARGETSLIST},"
-	[[ -n "$XCLUDESLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${XCLUDESLIST},"
-
-	[[ -n "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Groups: ${TARGETSLIST} - Exclusions: ${XCLUDESLIST}" >> $logFile 
-	[[ -n "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Groups: ${TARGETSLIST}" >> $logFile 
-	[[ -z "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Exclusions: ${XCLUDESLIST}" >> $logFile 
-#	[[ -z "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) - <n/a>" >> $logFile
-
+	[[ -n "$TARGETSLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${TARGETSLIST}${IFS}"
+	[[ -n "$XCLUDESLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${XCLUDESLIST}${IFS}"
+	
+	[[ -n "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Group IDs: ${TARGETSLIST} - Exclusion Group IDs: ${XCLUDESLIST}" >> $logFile 
+	[[ -n "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Group IDs: ${TARGETSLIST}" >> $logFile 
+	[[ -z "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Exclusion Group IDs: ${XCLUDESLIST}" >> $logFile 
+	#[[ -z "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) - <n/a>" >> $logFile
+	
 }
 
 ##############################################################################
@@ -58,8 +58,8 @@ configIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $configIDList; do
 	
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceconfigurationprofiles/id/$i | xmllint --xpath '//configuration_profile/scope/mobile_device_groups/mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceconfigurationprofiles/id/$i | xmllint --xpath '//configuration_profile/scope/exclusions/mobile_device_groups/mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceconfigurationprofiles/id/$i | xmllint --xpath '//configuration_profile/scope/mobile_device_groups/mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceconfigurationprofiles/id/$i | xmllint --xpath '//configuration_profile/scope/exclusions/mobile_device_groups/mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 	
 	appendTargets 'Config' $i
 	
@@ -74,8 +74,8 @@ iOSappIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $iOSappIDList; do
 	
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceapplications/id/$i | xmllint --xpath '//mobile_device_application/scope/mobile_device_groups/mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceapplications/id/$i | xmllint --xpath '//mobile_device_application/scope/exclusions/mobile_device_groups/mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceapplications/id/$i | xmllint --xpath '//mobile_device_application/scope/mobile_device_groups/mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/mobiledeviceapplications/id/$i | xmllint --xpath '//mobile_device_application/scope/exclusions/mobile_device_groups/mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 	
 	appendTargets 'iOSApp' $i
 	
@@ -90,8 +90,8 @@ ebooksIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $ebooksIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/mobile_device_groups/mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/exclusions/mobile_device_groups/mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/mobile_device_groups/mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/exclusions/mobile_device_groups/mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 
 	appendTargets 'Ebooks' $i
 
@@ -99,7 +99,7 @@ done
 
 ##### COLLECT ALL SMART MOBILE DEVICE GROUPS IN ARRAY #####
 
-groupNamesArray=( $( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/mobiledevicegroups | xmllint --xpath '//mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) )
+groupIDsArray=( $( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/mobiledevicegroups | xmllint --xpath '//mobile_device_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' ) )
 
 ###### REMOVE GROUPS TARGETED MULTIPLE TIMES RESULTING IN DUPLICATE NAMES ######
 
@@ -141,16 +141,16 @@ done
 
 # set counter variables and create empty $noTargetsArray to store untargeted groups
 noTargetsArray=() ; B=0 ; OG=0
-while [ $OG -lt ${#groupNamesArray[@]} ]; do
+while [ $OG -lt ${#groupIDsArray[@]} ]; do
 	
 	SA=0 ; targets=""
 	while [[ $SA -lt ${#uniqueArray[@]} && -z "${targets}" ]]; do
-		[[ "${groupNamesArray[$OG]}" == "${uniqueArray[$SA]}" ]] && targets="found"	
+		[[ "${groupIDsArray[$OG]}" == "${uniqueArray[$SA]}" ]] && targets="found"	
 		(( SA+=1 ))
 	done
 	
 	if [[ -z "${targets}" ]]; then
-		noTargetsArray[$B]=${groupNamesArray[$OG]}
+		noTargetsArray[$B]=${groupIDsArray[$OG]}
 		(( B+=1 ))
 	fi
 
@@ -165,10 +165,11 @@ echo -e "\nUntargeted Groups:"
 
 i=0
 while [ $i -lt ${#noTargetsArray[@]} ]; do
-	echo "${noTargetsArray[$i]}" >> $logFile
+#	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/mobiledevicegroups/id/${noTargetsArray[$i]} | xmllint --xpath '//mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})"
+	echo "GroupID: ${noTargetsArray[$i]}" >> $logFile
 	
 	# Output to terminal for simmplicity
-	echo "${noTargetsArray[$i]}"
+	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/mobiledevicegroups/id/${noTargetsArray[$i]} | xmllint --xpath '//mobile_device_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})"
 	
 	(( i+=1 ))
 done

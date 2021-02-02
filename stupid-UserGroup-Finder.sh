@@ -35,12 +35,12 @@ touch $logFile
 
 appendTargets () {
 	
-	[[ -n "$TARGETSLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${TARGETSLIST},"
-	[[ -n "$XCLUDESLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${XCLUDESLIST},"
+	[[ -n "$TARGETSLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${TARGETSLIST}${IFS}"
+	[[ -n "$XCLUDESLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${XCLUDESLIST}${IFS}"
 	
-	[[ -n "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Groups: ${TARGETSLIST} - Exclusions: ${XCLUDESLIST}" >> $logFile 
-	[[ -n "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Groups: ${TARGETSLIST}" >> $logFile 
-	[[ -z "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Exclusions: ${XCLUDESLIST}" >> $logFile 
+	[[ -n "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Group IDs: ${TARGETSLIST} - Exclusion Group IDs: ${XCLUDESLIST}" >> $logFile 
+	[[ -n "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Group IDs: ${TARGETSLIST}" >> $logFile 
+	[[ -z "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Exclusion Group IDs: ${XCLUDESLIST}" >> $logFile 
 	#[[ -z "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) - <n/a>" >> $logFile
 	
 }
@@ -58,8 +58,8 @@ VPPinvIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $VPPinvIDList; do
 	
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppinvitations/id/$i | xmllint --xpath '//vpp_invitation/scope/jss_user_groups/user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppinvitations/id/$i | xmllint --xpath '//vpp_invitation/scope/exclusions/jss_user_groups/user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppinvitations/id/$i | xmllint --xpath '//vpp_invitation/scope/jss_user_groups/user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppinvitations/id/$i | xmllint --xpath '//vpp_invitation/scope/exclusions/jss_user_groups/user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 	
 	appendTargets 'VPPinv' $i
 	
@@ -74,8 +74,8 @@ VPPasnIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $VPPasnIDList; do
 	
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppassignments/id/$i | xmllint --xpath '//vpp_assignment/scope/jss_user_groups/user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppassignments/id/$i | xmllint --xpath '//vpp_assignment/scope/exclusions/jss_user_groups/user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppassignments/id/$i | xmllint --xpath '//vpp_assignment/scope/jss_user_groups/user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/vppassignments/id/$i | xmllint --xpath '//vpp_assignment/scope/exclusions/jss_user_groups/user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 	
 	appendTargets 'VPPasn' $i
 	
@@ -90,8 +90,8 @@ ebooksIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $ebooksIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/jss_user_groups/user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/exclusions/jss_user_groups/user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/jss_user_groups/user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/exclusions/jss_user_groups/user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 
 	appendTargets 'Ebooks' $i
 
@@ -99,7 +99,7 @@ done
 
 ##### COLLECT ALL SMART USER GROUPS IN ARRAY #####
 
-groupNamesArray=( $( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/usergroups | xmllint --xpath '//user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) )
+groupIDsArray=( $( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/usergroups | xmllint --xpath '//user_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' ) )
 
 ###### REMOVE GROUPS TARGETED MULTIPLE TIMES RESULTING IN DUPLICATE NAMES ######
 
@@ -141,19 +141,19 @@ done
 
 # set counter variables and create empty $noTargetsArray to store untargeted groups
 noTargetsArray=() ; B=0 ; OG=0
-while [ $OG -lt ${#groupNamesArray[@]} ]; do
+while [ $OG -lt ${#groupIDsArray[@]} ]; do
 	
 	SA=0 ; targets=""
 	while [[ $SA -lt ${#uniqueArray[@]} && -z "${targets}" ]]; do
-		[[ "${groupNamesArray[$OG]}" == "${uniqueArray[$SA]}" ]] && targets="found"	
+		[[ "${groupIDsArray[$OG]}" == "${uniqueArray[$SA]}" ]] && targets="found"	
 		(( SA+=1 ))
 	done
 	
 	if [[ -z "${targets}" ]]; then
-		noTargetsArray[$B]=${groupNamesArray[$OG]}
+		noTargetsArray[$B]=${groupIDsArray[$OG]}
 		(( B+=1 ))
 	fi
-	
+
 	(( OG+=1 ))
 done
 
@@ -165,10 +165,11 @@ echo -e "\nUntargeted Groups:"
 
 i=0
 while [ $i -lt ${#noTargetsArray[@]} ]; do
-	echo "${noTargetsArray[$i]}" >> $logFile
+#	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/usergroups/id/${noTargetsArray[$i]} | xmllint --xpath '//user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})"
+	echo "GroupID: ${noTargetsArray[$i]}" >> $logFile
 	
 	# Output to terminal for simmplicity
-	echo "${noTargetsArray[$i]}"
+	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/usergroups/id/${noTargetsArray[$i]} | xmllint --xpath '//user_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})"
 	
 	(( i+=1 ))
 done

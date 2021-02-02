@@ -35,13 +35,13 @@ touch $logFile
 
 appendTargets () {
 	
-	[[ -n "$TARGETSLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${TARGETSLIST},"
-	[[ -n "$XCLUDESLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${XCLUDESLIST},"
+	[[ -n "$TARGETSLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${TARGETSLIST}${IFS}"
+	[[ -n "$XCLUDESLIST" ]] && smartGroupTargetsList="${smartGroupTargetsList}${XCLUDESLIST}${IFS}"
 
-	[[ -n "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Groups: ${TARGETSLIST} - Exclusions: ${XCLUDESLIST}" >> $logFile 
-	[[ -n "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Groups: ${TARGETSLIST}" >> $logFile 
-	[[ -z "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Exclusions: ${XCLUDESLIST}" >> $logFile 
-#	[[ -z "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) - <n/a>" >> $logFile
+	[[ -n "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Group IDs: ${TARGETSLIST} - Exclusion Group IDs: ${XCLUDESLIST}" >> $logFile 
+	[[ -n "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) Target Group IDs: ${TARGETSLIST}" >> $logFile 
+	[[ -z "$TARGETSLIST" && -n "$XCLUDESLIST" ]] && echo "$1(ID=$2) Exclusion Group IDs: ${XCLUDESLIST}" >> $logFile 
+	#[[ -z "$TARGETSLIST" && -z "$XCLUDESLIST" ]] && echo "$1(ID=$2) - <n/a>" >> $logFile
 
 }
 
@@ -58,8 +58,8 @@ policyIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $policyIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/policies/id/$i | xmllint --xpath '//policy/scope/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/policies/id/$i | xmllint --xpath '//policy/scope/exclusions/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/policies/id/$i | xmllint --xpath '//policy/scope/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/policies/id/$i | xmllint --xpath '//policy/scope/exclusions/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 	
 	appendTargets 'Policy' $i
 	
@@ -74,8 +74,8 @@ configIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $configIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/osxconfigurationprofiles/id/$i | xmllint --xpath '//os_x_configuration_profile/scope/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/osxconfigurationprofiles/id/$i | xmllint --xpath '//os_x_configuration_profile/scope/exclusions/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/osxconfigurationprofiles/id/$i | xmllint --xpath '//os_x_configuration_profile/scope/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/osxconfigurationprofiles/id/$i | xmllint --xpath '//os_x_configuration_profile/scope/exclusions/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 	
 	appendTargets 'Config' $i
  	
@@ -90,8 +90,8 @@ restSWIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $restSWIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/restrictedsoftware/id/$i | xmllint --xpath '//restricted_software/scope/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/restrictedsoftware/id/$i | xmllint --xpath '//restricted_software/scope/exclusions/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/restrictedsoftware/id/$i | xmllint --xpath '//restricted_software/scope/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/restrictedsoftware/id/$i | xmllint --xpath '//restricted_software/scope/exclusions/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 
 	appendTargets 'RestSW' $i
 
@@ -106,8 +106,8 @@ masappIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $masappIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/macapplications/id/$i | xmllint --xpath '//mac_application/scope/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/macapplications/id/$i | xmllint --xpath '//mac_application/scope/exclusions/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/macapplications/id/$i | xmllint --xpath '//mac_application/scope/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/macapplications/id/$i | xmllint --xpath '//mac_application/scope/exclusions/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 
 	appendTargets 'MASApp' $i
 	
@@ -122,14 +122,14 @@ patchpIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $patchpIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/patchpolicies/id/$i | xmllint --xpath '//patch_policy/scope/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/patchpolicies/id/$i | xmllint --xpath '//patch_policy/scope/exclusions/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/patchpolicies/id/$i | xmllint --xpath '//patch_policy/scope/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/patchpolicies/id/$i | xmllint --xpath '//patch_policy/scope/exclusions/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 
 	appendTargets 'PatchP' $i
 	
 done
 
-###### EBOOKS LOL ######
+##### EBOOKS LOL ######
 
 echo -e "\n$(date '+%H:%M:%S') - Finding eBook Smart Group targets and exclusions..." >> $logFile
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> $logFile
@@ -138,8 +138,8 @@ ebooksIDList=$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" $
 
 for i in $ebooksIDList; do
 
-	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
-	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/exclusions/computer_groups/computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' )
+	TARGETSLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
+	XCLUDESLIST=$( curl -ksu ${JSSAdmin}:${JSSPassw} ${JSSURL}/JSSResource/ebooks/id/$i | xmllint --xpath '//ebook/scope/exclusions/computer_groups/computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' )
 
 	appendTargets 'Ebooks' $i
 
@@ -147,7 +147,7 @@ done
 
 ##### COLLECT ALL SMART COMPUTER GROUPS IN ARRAY #####
 
-groupNamesArray=( $( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/computergroups | xmllint --xpath '//computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) )
+groupIDsArray=( $( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/computergroups | xmllint --xpath '//computer_group/id' - | sed -e $'s/\<id\>//g' -e $'s/\<\/id\>/,/g' -e $'s/\,$//' ) )
 
 ###### REMOVE GROUPS TARGETED MULTIPLE TIMES RESULTING IN DUPLICATE NAMES ######
 
@@ -159,7 +159,7 @@ z=0 ; smartGroupTargetsArray=()
 
 # assign list values to array for easier comparison
 for grp in $smartGroupTargetsList; do
-	smartGroupTargetsArray[$z]=${grp}
+	smartGroupTargetsArray[$z]="${grp}"
 	(( z+=1 ))
 done
 
@@ -189,16 +189,16 @@ done
 
 # set counter variables and create empty $noTargetsArray to store untargeted groups
 noTargetsArray=() ; B=0 ; OG=0
-while [ $OG -lt ${#groupNamesArray[@]} ]; do
+while [ $OG -lt ${#groupIDsArray[@]} ]; do
 	
 	SA=0 ; targets=""
 	while [[ $SA -lt ${#uniqueArray[@]} && -z "${targets}" ]]; do
-		[[ "${groupNamesArray[$OG]}" == "${uniqueArray[$SA]}" ]] && targets="found"	
+		[[ "${groupIDsArray[$OG]}" == "${uniqueArray[$SA]}" ]] && targets="found"	
 		(( SA+=1 ))
 	done
 	
 	if [[ -z "${targets}" ]]; then
-		noTargetsArray[$B]=${groupNamesArray[$OG]}
+		noTargetsArray[$B]=${groupIDsArray[$OG]}
 		(( B+=1 ))
 	fi
 
@@ -213,10 +213,11 @@ echo -e "\nUntargeted Groups:"
 
 i=0
 while [ $i -lt ${#noTargetsArray[@]} ]; do
-	echo "${noTargetsArray[$i]}" >> $logFile
+#	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/computergroups/id/${noTargetsArray[$i]} | xmllint --xpath '//computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})" >> $logFile
+	echo "GroupID: ${noTargetsArray[$i]}" >> $logFile
 	
 	# Output to terminal for simmplicity
-	echo "${noTargetsArray[$i]}"
+	echo "$( curl -ksu ${JSSAdmin}:${JSSPassw} -H "Accept: application/xml" ${JSSURL}/JSSResource/computergroups/id/${noTargetsArray[$i]} | xmllint --xpath '//computer_group/name' - | sed -e $'s/\<name\>//g' -e $'s/\<\/name\>/,/g' -e $'s/\,$//' ) (GroupID: ${noTargetsArray[$i]})"
 	
 	(( i+=1 ))
 done
